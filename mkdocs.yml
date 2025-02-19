@@ -5,12 +5,13 @@ theme:
   name: material
   language: es  
   features:
+    - toc.integrate
     - content.code.copy 
   icon:
     logo: octicons/code-16
   theme:
   palette:
-    primary: pink    
+    primary: teal    
 
 markdown_extensions:
   - admonition
@@ -48,12 +49,6 @@ nav:
   - Semana 9: p9.md
   - Semana 10: p10.md
   - Semana 11: p11.md
-  - Semana 12: p12.md
-  - Semana 13: p13.md
-  - Semana 14: p14.md
-  - Semana 15: p15.md
-  - Semana 16: p16.md
-  - Semana 17: p17.md
-  - Semana 18: p18.md
+ 
   
 
