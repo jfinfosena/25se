@@ -1,33 +1,50 @@
 site_name: Sistemas Embebidos
 site_url: https://jfinfosena.github.io/25se/
+site_author: jhonfvg
 
 theme:
   name: material
   language: es  
-  features:
-    - toc.integrate
-    - content.code.copy 
   icon:
-    logo: octicons/code-16
-  theme:
-  palette:
-    primary: teal    
+    logo: octicons/code-16    
+  features:    
+    - navigation.tabs.sticky 
+    - navigation.tabs
+    - navigation.top
+    # - toc.integrate
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - navigation.indexes
+  palette:    
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode        
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: orange
+      accent: lime
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
 
 markdown_extensions:
   - admonition
-  - pymdownx.details 
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
+  - codehilite
+  - toc
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+        alternate_style: true
+  - pymdownx.details
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences 
   - attr_list
   - md_in_html
   - pymdownx.blocks.caption
@@ -37,18 +54,24 @@ extra:
 
 copyright: 2025 &copy; by JFVG
 
-nav:  
-  - Semana 1: p1.md
-  - Semana 2: p2.md
-  - Semana 3: p3.md
-  - Semana 4: p4.md
-  - Semana 5: p5.md
-  - Semana 6: p6.md
-  - Semana 7: p7.md
-  - Semana 8: p8.md
-  - Semana 9: p9.md
-  - Semana 10: p10.md
-  - Semana 11: p11.md
- 
-  
+nav:
+  - Inicio: index.md  
+  - Contenido:
+      - content/p0.md
+      - content/p1.md
+      - content/p2.md
+      - content/p3.md  
+
+  - Proyecto Integrador: 
+      - pi/p1.md
+      - pi/p2.md
+  - Blog:
+     - blog/index.md
+  - Acerca de: about.md
+
+plugins:
+  - search
+  - blog
+  - glightbox
+
 
