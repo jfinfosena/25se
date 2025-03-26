@@ -1,0 +1,135 @@
+# Ejemplo Control Motores Paso a Paso por milimitros
+
+```cpp
+#include <Arduino.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+int stepX = 4;
+int dirX = 5;
+int stepY = 6;
+int dirY = 7;
+int btnStart = 2;
+bool stateX = false;
+bool stateY = false;
+bool start = false;
+int counterMoves = 0;
+int mmR = 42;  //200steps -> 42mm
+int enable = 10;
+
+//Mover el motor X
+void moveX(int dir, int steps) {
+  digitalWrite(dirX, dir);
+  for (int i = 0; i < steps; i++) {
+    digitalWrite(stepX, HIGH);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    digitalWrite(stepX, LOW);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+  }
+}
+
+//Mover el motor Y
+void moveY(int dir, int steps) {
+  digitalWrite(dirY, dir);
+  for (int i = 0; i < steps; i++) {
+    digitalWrite(stepY, HIGH);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    digitalWrite(stepY, LOW);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+  }
+}
+
+//MoveXmm
+void moveXmm(int dir, int mm) {
+  int steps = mm * 200 / mmR;
+  moveX(dir, steps);
+}
+
+//MoveXmm
+void moveYmm(int dir, int mm) {
+  int steps = mm * 200 / mmR;
+  moveY(dir, steps);
+}
+
+// Tarea para controlar el motor X
+void motorXTask(void *pvParameters) {
+  while (true) {
+    if (stateX == true) {
+      if (counterMoves == 0) {
+        moveXmm(1, 42);
+      }
+      if (counterMoves == 1) {
+        moveX(0, 84);
+      }
+
+      stateX = false;
+    }
+    vTaskDelay(1 / portTICK_PERIOD_MS);
+  }
+}
+
+// Tarea para controlar el motor Y
+void motorYTask(void *pvParameters) {
+  while (true) {
+    if (stateY == true) {
+      if (counterMoves == 0) {
+        moveYmm(1, 126);
+      }
+      if (counterMoves == 1) {
+        moveYmm(0, 42);
+      }
+      stateY = false;
+    }
+    vTaskDelay(1 / portTICK_PERIOD_MS);
+  }
+}
+
+// Tarea para controlar el botón
+void buttonTask(void *pvParameters) {
+  while (true) {
+    if (digitalRead(btnStart) == LOW) {
+      start = true;
+      stateX = true;
+      stateY = true;
+    }
+    vTaskDelay(1 / portTICK_PERIOD_MS);
+  }
+}
+
+// Tarea para mesajes puerto serial
+void endProcessTask(void *pvParameters) {
+  while (true) {
+    if (start == true) {
+      if (stateX == false && stateY == false) {
+        Serial.println("Motor XY off");
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        counterMoves++;
+        stateX = true;
+        stateY = true;
+      }
+    }
+    vTaskDelay(1 / portTICK_PERIOD_MS);
+  }
+}
+
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(stepX, OUTPUT);
+  pinMode(dirX, OUTPUT);
+  pinMode(stepY, OUTPUT);
+  pinMode(dirY, OUTPUT);
+  pinMode(enable, OUTPUT);
+  pinMode(btnStart, INPUT_PULLUP);
+  digitalWrite(enable, LOW)
+  xTaskCreatePinnedToCore(motorXTask, "MotorXTask", 2048, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(motorYTask, "MotorYTask", 2048, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(buttonTask, "ButtonTask", 2048, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(endProcessTask, "EndProcessTask", 2048, NULL, 1, NULL, 0);
+}
+
+void loop() {
+  vTaskDelay(1 / portTICK_PERIOD_MS);
+}
+
+```
